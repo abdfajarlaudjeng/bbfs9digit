@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>BBFS Generator 2D, 3D, 4D</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      margin: 0;
+      display: flex;
+      min-height: 100vh;
+      background: #f3f4f6;
+    }
+    nav {
+      background: white;
+      width: 256px;
+      padding: 1.5rem;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    main {
+      flex-grow: 1;
+      padding: 2rem;
+      background: white;
+      max-width: 900px;
+      margin: 20px auto;
+      border-radius: 0.5rem;
+      box-shadow: 0 0 15px rgba(0,0,0,0.1);
+    }
+    .tabs button {
+      padding: 10px 20px;
+      margin-right: 10px;
+      border: none;
+      cursor: pointer;
+      border-radius: 5px;
+      background: #e5e7eb;
+      font-weight: bold;
+    }
+    .tabs button.active {
+      background: #2563eb;
+      color: white;
+    }
+    .tabcontent {
+      display: none;
+    }
+    .tabcontent.active {
+      display: block;
+    }
+    textarea {
+      width: 100%;
+      height: 150px;
+      font-family: monospace;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <h1>BBFS Generator</h1>
+    <p>Supports up to 10 digits</p>
+  </nav>
+  <main>
+    <label for="bbfsInput">Masukkan BBFS (maks. 10 digit):</label><br>
+    <input type="text" id="bbfsInput" maxlength="10" style="width: 100%; padding: 8px; margin-top: 5px;"><br><br>
+    <button onclick="generateAll()">🔄 Generate</button>
+
+    <div class="tabs" style="margin-top: 20px;">
+      <button onclick="openTab('2D')" id="tabBtn2D" class="active">2D</button>
+      <button onclick="openTab('3D')" id="tabBtn3D">3D</button>
+      <button onclick="openTab('4D')" id="tabBtn4D">4D</button>
+    </div>
+
+    <div id="2D" class="tabcontent active">
+      <h3>Hasil 2D</h3>
+      <textarea id="result2D" readonly></textarea>
+    </div>
+    <div id="3D" class="tabcontent">
+      <h3>Hasil 3D</h3>
+      <textarea id="result3D" readonly></textarea>
+    </div>
+    <div id="4D" class="tabcontent">
+      <h3>Hasil 4D</h3>
+      <textarea id="result4D" readonly></textarea>
+    </div>
+  </main>
+
+  <script>
+    let allCombos = { "2D": [], "3D": [], "4D": [] };
+
+    function generateAll() {
+      const input = document.getElementById("bbfsInput").value.replace(/\\D/g, '');
+      if (input.length < 2 || input.length > 10) {
+        alert("Masukkan BBFS antara 2 sampai 10 digit.");
+        return;
+      }
+      allCombos["2D"] = getCombinations(input, 2).map(x => x + '*');
+      allCombos["3D"] = getCombinations(input, 3).map(x => x + '*');
+      allCombos["4D"] = getCombinations(input, 4).map(x => x + '*');
+
+      document.getElementById("result2D").value = allCombos["2D"].join('');
+      document.getElementById("result3D").value = formatOutput(allCombos["3D"], 7);
+      document.getElementById("result4D").value = formatOutput(allCombos["4D"], 6);
+    }
+
+    function getCombinations(str, len) {
+      const results = [];
+      function permute(prefix, chars) {
+        if (prefix.length === len) {
+          results.push(prefix);
+          return;
+        }
+        for (let i = 0; i < chars.length; i++) {
+          permute(prefix + chars[i], chars.slice(0, i) + chars.slice(i + 1));
+        }
+      }
+      permute('', str);
+      return [...new Set(results)];
+    }
+
+    function formatOutput(arr, perRow) {
+      let out = '';
+      for (let i = 0; i < arr.length; i++) {
+        out += arr[i] + '\\t';
+        if ((i + 1) % perRow === 0) out += '\\n';
+      }
+      return out;
+    }
+
+    function openTab(tabId) {
+      document.querySelectorAll(".tabcontent").forEach(div => div.classList.remove("active"));
+      document.getElementById(tabId).classList.add("active");
+      document.querySelectorAll(".tabs button").forEach(btn => btn.classList.remove("active"));
+      document.getElementById("tabBtn" + tabId).classList.add("active");
+    }
+  </script>
+</body>
+</html>
