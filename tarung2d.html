@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>BBFS Generator 2D, 3D, 4D 9 Digit</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      padding: 20px;
+      margin: 0;
+      display: flex;
+      min-height: 100vh;
+      background: #f3f4f6;
+    }
+
+    nav {
+      background: white;
+      width: 256px;
+      min-height: 100vh;
+      box-shadow: 0 0 10px rgb(0 0 0 / 0.1);
+      padding: 1.5rem;
+      position: sticky;
+      top: 0;
+      display: flex;
+      flex-direction: column;
+    }
+
+    nav h1 {
+      font-size: 1.25rem;
+      font-weight: 700;
+      margin-bottom: 2rem;
+      color: #374151;
+    }
+
+    nav ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    nav a {
+      display: block;
+      padding: 0.5rem 0.75rem;
+      border-radius: 0.375rem;
+      color: #374151;
+      text-decoration: none;
+      transition: background-color 0.3s, color 0.3s;
+    }
+
+    nav a:hover {
+      background-color: #2563eb;
+      color: white;
+    }
+
+    main {
+      flex-grow: 1;
+      padding: 2rem;
+      margin: 20px 0;
+      max-width: 900px;
+      background: white;
+      border-radius: 0.5rem;
+      box-shadow: 0 0 15px rgb(0 0 0 / 0.1);
+    }
+
+    h2 {
+      margin-bottom: 1rem;
+    }
+
+    label {
+      display: block;
+      margin-top: 1rem;
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+    }
+
+    input[type="number"] {
+      width: 100%;
+      padding: 0.5rem;
+      font-size: 1rem;
+      border: 1px solid #d1d5db;
+      border-radius: 0.375rem;
+      box-sizing: border-box;
+    }
+
+    button {
+      margin-top: 1rem;
+      padding: 10px 16px;
+      font-weight: 600;
+      border: none;
+      border-radius: 0.375rem;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    button:hover {
+      opacity: 0.9;
+    }
+
+    button.copy {
+      background: #6b7280;
+      color: white;
+      margin-top: 10px;
+    }
+
+    button.copy:hover {
+      background: #4b5563;
+    }
+
+    button.download-btn {
+      margin-bottom: 10px;
+      background: #2563eb;
+      color: white;
+    }
+
+    button.download-btn:hover {
+      background: #1e40af;
+    }
+
+    .hasil {
+      margin-top: 1rem;
+      padding: 1rem;
+      border: 1px solid #e5e7eb;
+      background: #f9fafb;
+      border-radius: 0.375rem;
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <h1>BBFS ALL PASARAN 9 Digit</h1>
+    <ul>
+      <li><a href="index.html">BERANDA</a></li>
+      <li><a href="5d.html">5D</a></li>
+      <li><a href="bbfs10.html">BBFS 10 DIGIT</a></li>
+      <li><a href="#">2D SHIO MAIN</a></li>
+      <li><a href="#">REKAP PREDIKSI</a></li>
+      <li><a href="#">Beting Pasaran</a></li>
+    </ul>
+  </nav>
+
+  <main>
+    <h2>Prediksi Angka Main dari Kepala & Ekor</h2>
+
+    <label for="inputKepala">Masukkan Kepala (0–9):</label>
+    <input type="number" id="inputKepala" min="0" max="9" placeholder="Contoh: 1" />
+
+    <label for="inputEkor">Masukkan Ekor (0–9):</label>
+    <input type="number" id="inputEkor" min="0" max="9" placeholder="Contoh: 6" />
+
+    <button onclick="prediksiAngkaMain()">Prediksi Angka Main</button>
+
+    <div class="hasil" id="hasil"></div>
+
+    <button class="copy" onclick="salinHasil()">Salin Hasil</button>
+  </main>
+
+  <script>
+    const polaAngkaMain = {
+      0: ['1', '2', '3'],
+      1: ['2', '4', '5'],
+      2: ['3', '5', '6'],
+      3: ['4', '6', '7'],
+      4: ['5', '7', '8'],
+      5: ['6', '8', '9'],
+      6: ['7', '9', '0'],
+      7: ['8', '0', '1'],
+      8: ['9', '1', '2'],
+      9: ['0', '2', '3']
+    };
+
+    function prediksiAngkaMain() {
+      const kepala = document.getElementById('inputKepala').value.trim();
+      const ekor = document.getElementById('inputEkor').value.trim();
+      const hasilDiv = document.getElementById('hasil');
+
+      if (!/^[0-9]$/.test(kepala) || !/^[0-9]$/.test(ekor)) {
+        hasilDiv.innerHTML = '<span style="color:red;">Masukkan angka kepala dan ekor yang valid (0–9).</span>';
+        return;
+      }
+
+      const hasilKepala = polaAngkaMain[kepala];
+      const hasilEkor = polaAngkaMain[ekor];
+      const gabungan = [...new Set([...hasilKepala, ...hasilEkor])];
+
+      hasilDiv.innerHTML = `
+        <div><strong>Kepala ${kepala}:</strong> ${hasilKepala.join(', ')}</div>
+        <div><strong>Ekor ${ekor}:</strong> ${hasilEkor.join(', ')}</div>
+        <div><strong>Gabungan Angka Main:</strong> ${gabungan.join(', ')}</div>
+      `;
+    }
+
+    function salinHasil() {
+      const text = document.getElementById('hasil').innerText;
+      if (!text) return alert('Tidak ada hasil untuk disalin.');
+      navigator.clipboard.writeText(text)
+        .then(() => alert('Hasil disalin ke clipboard.'))
+        .catch(() => alert('Gagal menyalin.'));
+    }
+  </script>
+</body>
+</html>
